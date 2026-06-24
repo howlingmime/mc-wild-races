@@ -20,13 +20,9 @@ public abstract class ServerPlayerEntityMixin {
 
         Race race = ((PlayerRaceAccess) player).wildraces$getRace();
         switch (race) {
-            case TROLL -> {
+            case TROLL ->
+                // Regeneration passive — fire weakness is handled in LivingEntityMixin.hurtServer
                 player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 120, 0, false, false));
-                int skyBrightness = player.level().getEffectiveSkyBrightness(player.blockPosition());
-                if (skyBrightness >= 13 && !player.isUnderWater()) {
-                    player.igniteForSeconds(3);
-                }
-            }
             case LIONBEAR ->
                 player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 300, 0, false, false));
             case CENTAUR ->

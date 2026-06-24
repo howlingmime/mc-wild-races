@@ -64,7 +64,9 @@ public abstract class PlayerEntityMixin implements PlayerRaceAccess {
             case MINOTAUR -> {
                 if (self.isSprinting()) {
                     double yawRad = self.getYRot() * (Math.PI / 180.0);
-                    living.knockback(2.0, Math.sin(yawRad), -Math.cos(yawRad));
+                    // Charge: heavy knockback + 6 bonus impact damage
+                    living.knockback(3.0, Math.sin(yawRad), -Math.cos(yawRad));
+                    living.hurt(self.damageSources().playerAttack(self), 6.0f);
                 }
             }
             default -> {}

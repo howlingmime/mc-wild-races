@@ -13,8 +13,8 @@ public enum Race {
     ),
     MINOTAUR(
         "Minotaur",
-        "Massive health and strength. Sprint attacks send enemies flying. Moves slower.",
-        12, 4, -0.05
+        "Massive health and strength. Sprint charges send enemies flying with bonus damage.",
+        12, 4, 0
     ),
     LIONBEAR(
         "Lionbear",
@@ -23,7 +23,7 @@ public enum Race {
     ),
     TROLL(
         "Troll",
-        "Immense constitution with constant regeneration. Burns in direct sunlight.",
+        "Immense constitution with constant regeneration. Takes double damage from fire.",
         20, 3, -0.075
     ),
     CENTAUR(

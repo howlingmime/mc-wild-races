@@ -1,6 +1,8 @@
 package com.wildraces.race;
 
 import com.wildraces.PlayerRaceAccess;
+import com.wildraces.network.RacePacket;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
@@ -23,6 +25,9 @@ public class RaceManager {
         if (player.getHealth() > player.getMaxHealth()) {
             player.setHealth(player.getMaxHealth());
         }
+
+        // Sync to client so client-side physics (climbing, step height) use the correct race.
+        ServerPlayNetworking.send(player, new RacePacket(race.name()));
 
         if (race == Race.NONE) {
             player.sendSystemMessage(Component.literal("You have returned to your human form."));
