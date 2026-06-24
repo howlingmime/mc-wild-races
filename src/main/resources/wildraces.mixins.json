@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "com.wildraces.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "PlayerEntityMixin",
+    "ServerPlayerEntityMixin",
+    "LivingEntityMixin",
+    "AbstractArrowMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
