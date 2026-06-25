@@ -3,7 +3,9 @@
   "package": "com.wildraces.client.mixin",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "LivingEntityRendererMixin"
+    "LivingEntityRendererMixin",
+    "LivingEntityRendererAccessor",
+    "AvatarRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

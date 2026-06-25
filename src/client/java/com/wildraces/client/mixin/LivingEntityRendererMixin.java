@@ -30,6 +30,7 @@ public abstract class LivingEntityRendererMixin {
             case LIONBEAR -> 0xFFFFCC66;  // amber/gold
             case ARACHNID -> 0xFFCCCCDD;  // blue-silver
             case CENTAUR  -> 0xFFDDCC99;  // tan
+            case SPRITE   -> 0xFFCC88FF;  // lavender
             default -> -1;
         };
         if (tint != -1) cir.setReturnValue(tint);

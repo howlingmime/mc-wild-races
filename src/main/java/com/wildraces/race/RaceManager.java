@@ -18,15 +18,31 @@ public class RaceManager {
     private static final Identifier SPEED_ID  = Identifier.fromNamespaceAndPath("wildraces", "race_speed");
 
     public static void setRace(ServerPlayer player, Race race) {
+        Race oldRace = ((PlayerRaceAccess) player).wildraces$getRace();
         removeRaceModifiers(player);
+
+        // Revoke Sprite flight when leaving the race
+        if (oldRace == Race.SPRITE && race != Race.SPRITE) {
+            player.getAbilities().mayfly = false;
+            player.getAbilities().flying = false;
+            player.onUpdateAbilities();
+            ((PlayerRaceAccess) player).wildraces$setSpriteMeter(1.0f); // reset for future
+        }
+
         ((PlayerRaceAccess) player).wildraces$setRace(race);
         applyRaceModifiers(player, race);
+
+        // Grant full-meter flight immediately when becoming Sprite
+        if (race == Race.SPRITE) {
+            player.getAbilities().mayfly = true;
+            player.onUpdateAbilities();
+            ((PlayerRaceAccess) player).wildraces$setSpriteMeter(1.0f);
+        }
 
         if (player.getHealth() > player.getMaxHealth()) {
             player.setHealth(player.getMaxHealth());
         }
 
-        // Sync to client so client-side physics (climbing, step height) use the correct race.
         ServerPlayNetworking.send(player, new RacePacket(race.name()));
 
         if (race == Race.NONE) {

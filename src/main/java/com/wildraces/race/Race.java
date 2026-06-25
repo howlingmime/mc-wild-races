@@ -24,12 +24,17 @@ public enum Race {
     TROLL(
         "Troll",
         "Immense constitution with constant regeneration. Takes double damage from fire.",
-        20, 3, -0.075
+        20, 3, 0
     ),
     CENTAUR(
         "Centaur",
         "Swift and sure-footed. Deals 50% more damage with bows. Gains Jump Boost.",
         6, 0, 0.05
+    ),
+    SPRITE(
+        "Sprite",
+        "Tiny magical creature. Wings hold 10 seconds of flight; recharge 10% every 6 seconds.",
+        -4, 0, 0.03
     );
 
     public final String displayName;

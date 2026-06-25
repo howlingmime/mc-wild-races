@@ -33,9 +33,14 @@ public class WildRacesMod implements ModInitializer {
             if (race == Race.NONE) {
                 player.sendSystemMessage(Component.literal("§6Welcome! You haven't chosen a race yet."));
                 player.sendSystemMessage(Component.literal("§7Use §e/race list §7to see options, then §e/race set <race>§7."));
-                player.sendSystemMessage(Component.literal("§7Races: §aarachnid§7, §aminotaur§7, §alionbear§7, §atroll§7, §acentaur§7."));
+                player.sendSystemMessage(Component.literal("§7Races: §aarachnid§7, §aminotaur§7, §alionbear§7, §atroll§7, §acentaur§7, §dsprite§7."));
             } else {
                 RaceManager.applyRaceModifiers(player, race);
+                // Restore Sprite flight if the wing meter has some charge
+                if (race == Race.SPRITE && ((PlayerRaceAccess) player).wildraces$getSpriteMeter() > 0.05f) {
+                    player.getAbilities().mayfly = true;
+                    player.onUpdateAbilities();
+                }
                 // Sync race to the client so client-side physics (climbing etc.) work.
                 ServerPlayNetworking.send(player, new RacePacket(race.name()));
             }
@@ -45,6 +50,10 @@ public class WildRacesMod implements ModInitializer {
             Race race = ((PlayerRaceAccess) newPlayer).wildraces$getRace();
             if (race != Race.NONE) {
                 RaceManager.applyRaceModifiers(newPlayer, race);
+                if (race == Race.SPRITE && ((PlayerRaceAccess) newPlayer).wildraces$getSpriteMeter() > 0.05f) {
+                    newPlayer.getAbilities().mayfly = true;
+                    newPlayer.onUpdateAbilities();
+                }
                 ServerPlayNetworking.send(newPlayer, new RacePacket(race.name()));
             }
         });

@@ -18,40 +18,37 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Player.class)
 public abstract class PlayerEntityMixin implements PlayerRaceAccess {
 
-    @Unique
-    private Race wildRaces$race = Race.NONE;
+    @Unique private Race  wildRaces$race        = Race.NONE;
+    @Unique private float wildRaces$spriteMeter = 1.0f;
 
-    // ── PlayerRaceAccess interface ──────────────────────────────────────────
+    // ── PlayerRaceAccess ────────────────────────────────────────────────────
 
-    @Override
-    public Race wildraces$getRace() {
-        return wildRaces$race;
-    }
+    @Override public Race  wildraces$getRace()              { return wildRaces$race; }
+    @Override public void  wildraces$setRace(Race r)        { this.wildRaces$race = r; }
+    @Override public float wildraces$getSpriteMeter()       { return wildRaces$spriteMeter; }
+    @Override public void  wildraces$setSpriteMeter(float m){ this.wildRaces$spriteMeter = m; }
 
-    @Override
-    public void wildraces$setRace(Race race) {
-        this.wildRaces$race = race;
-    }
-
-    // ── Persistence (ValueInput/ValueOutput in MC 26.1+) ────────────────────
+    // ── NBT persistence ─────────────────────────────────────────────────────
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     private void readRace(ValueInput input, CallbackInfo ci) {
         input.getString("WildRacesRace").ifPresent(name -> {
-            try {
-                wildRaces$race = Race.valueOf(name);
-            } catch (IllegalArgumentException ignored) {
-                wildRaces$race = Race.NONE;
-            }
+            try { wildRaces$race = Race.valueOf(name); }
+            catch (IllegalArgumentException ignored) { wildRaces$race = Race.NONE; }
+        });
+        input.getString("WildRacesSpriteMeter").ifPresent(s -> {
+            try { wildRaces$spriteMeter = Float.parseFloat(s); }
+            catch (NumberFormatException ignored) {}
         });
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     private void writeRace(ValueOutput output, CallbackInfo ci) {
         output.putString("WildRacesRace", wildRaces$race.name());
+        output.putString("WildRacesSpriteMeter", String.valueOf(wildRaces$spriteMeter));
     }
 
-    // ── Melee attack: Arachnid web + Minotaur sprint knockback ──────────────
+    // ── Melee: Arachnid web + Minotaur sprint charge ─────────────────────────
 
     @Inject(method = "attack", at = @At("TAIL"))
     private void onMeleeAttack(Entity target, CallbackInfo ci) {
@@ -64,7 +61,6 @@ public abstract class PlayerEntityMixin implements PlayerRaceAccess {
             case MINOTAUR -> {
                 if (self.isSprinting()) {
                     double yawRad = self.getYRot() * (Math.PI / 180.0);
-                    // Charge: heavy knockback + 6 bonus impact damage
                     living.knockback(3.0, Math.sin(yawRad), -Math.cos(yawRad));
                     living.hurt(self.damageSources().playerAttack(self), 6.0f);
                 }
